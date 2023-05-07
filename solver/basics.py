@@ -3,119 +3,158 @@ from dataclasses import dataclass
 import numpy as np
 from typing import Callable
 
-class GetX:
 
-    def __init__(self, ix:int):
+class GetX:
+    def __init__(self, ix: int):
         self.ix = ix
 
     def __call__(self, data: np.ndarray):
         return data[self.ix + len(data)]
 
-def xN(ix: int) -> Callable:
-    def f(data: np.ndarray):
-        return data[ix + len(data)]
 
-    return f
+class Mul:
+    def __init__(self, *funcs):
+        self.funcs = funcs
 
-
-def mul(*funcs) -> Callable:
-    def f(data: np.ndarray):
+    def __call__(self, data: np.ndarray):
         r = 1
-        for f in funcs:
+        for f in self.funcs:
             r *= f(data)
         return r
 
-    return f
+
+class Pow:
+    def __init__(self, func, d: int):
+        self.func = func
+        self.d = d
+
+    def __call__(self, data: np.ndarray):
+        return self.func(data) ** self.d
 
 
-def pow(func, d):
-    def f(data):
-        return func(data) ** d
+class One:
+    def __init__(self):
+        pass
 
-    return f
+    def __call__(self, *a):
+        return 1
 
-
-def one(*a) -> int:
-    return 1
 
 @dataclass
-class PredSeq:
+class PredFunc:
     deep: int
     seq: list[Callable]
+    name: str
 
-functions_dict = dict(
-    linear2=PredSeq(deep=2, seq=[one, xN(-1), xN(-2)]),
-    degree2=PredSeq(deep=2, seq=[one, xN(-1), xN(-2), mul(xN(-1), xN(-2))]),
-    degree2p=PredSeq(deep=2, seq=[one, xN(-1), xN(-2), mul(xN(-1), xN(-2)), pow(xN(-1), 2)]),
-    degree2b=PredSeq(deep=2, seq=[one, xN(-1), xN(-2), mul(xN(-1), xN(-2)), pow(xN(-1), 2), pow(xN(-2), 2)]),
-    degree3a=PredSeq(deep=3, seq=[
-        one,
-        xN(-1),
-        xN(-2),
-        xN(-3),
-        mul(xN(-1), xN(-2)),
-        mul(xN(-1), xN(-3)),
-        mul(xN(-3), xN(-2)),
-        pow(xN(-1), 2),
-        pow(xN(-2), 2),
-        pow(xN(-3), 2),
-        pow(xN(-1), 3),
-        pow(xN(-2), 3),
-        pow(xN(-3), 3),
-    ]),
-    degree3b=PredSeq(deep=3, seq=[
-        one,
-        xN(-1),
-        xN(-2),
-        xN(-3),
-        mul(xN(-1), xN(-2)),
-        mul(xN(-1), xN(-3)),
-        mul(xN(-3), xN(-2)),
-        mul(xN(-1), mul(xN(-1), xN(-2))),
-        mul(xN(-1), mul(xN(-1), xN(-3))),
-        mul(xN(-2), mul(xN(-2), xN(-1))),
-        mul(xN(-2), mul(xN(-2), xN(-3))),
-        mul(xN(-3), mul(xN(-3), xN(-1)),),
-        mul(xN(-3), mul(xN(-3), xN(-2))),
-        pow(xN(-1), 2),
-        pow(xN(-2), 2),
-        pow(xN(-3), 2),
-        pow(xN(-1), 3),
-        pow(xN(-2), 3),
-        pow(xN(-3), 3),
-        pow(xN(-1), 4),
-        pow(xN(-2), 4),
-        pow(xN(-3), 4),
-    ]),
-    degree4i_a=PredSeq(deep=4, seq=[
-        one,
-        xN(-1),
-        xN(-2),
-        xN(-3),
-        xN(-4),
-        mul(xN(-1), xN(-2)),
-        mul(xN(-1), xN(-3)),
-        mul(xN(-1), xN(-4)),
-        mul(xN(-2), xN(-3)),
-        mul(xN(-2), xN(-4)),
-        mul(xN(-3), xN(-4)),
-        mul(xN(-1), mul(xN(-1), xN(-2))),
-        mul(xN(-1), mul(xN(-1), xN(-3))),
-        mul(xN(-2), mul(xN(-2), xN(-1))),
-        mul(xN(-2), mul(xN(-2), xN(-3))),
-        mul(xN(-3), mul(xN(-3), xN(-1)), ),
-        mul(xN(-3), mul(xN(-3), xN(-2))),
-        pow(xN(-1), 2),
-        pow(xN(-2), 2),
-        pow(xN(-3), 2),
-        pow(xN(-4), 2),
-        pow(xN(-1), 3),
-        pow(xN(-2), 3),
-        pow(xN(-3), 3),
-        pow(xN(-4), 3),
-        pow(xN(-1), 4),
-        pow(xN(-2), 4),
-        pow(xN(-3), 4),
-        pow(xN(-4), 4),
-    ]),
-)
+
+functions = [
+    PredFunc(name="linear2", deep=2, seq=[One(), GetX(-1), GetX(-2)]),
+    PredFunc(
+        name="degree2", deep=2, seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2))]
+    ),
+    PredFunc(
+        name="degree2p",
+        deep=2,
+        seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2)), Pow(GetX(-1), 2)],
+    ),
+    PredFunc(
+        name="degree2b",
+        deep=2,
+        seq=[
+            One(),
+            GetX(-1),
+            GetX(-2),
+            Mul(GetX(-1), GetX(-2)),
+            Pow(GetX(-1), 2),
+            Pow(GetX(-2), 2),
+        ],
+    ),
+    PredFunc(
+        name="degree3a",
+        deep=3,
+        seq=[
+            One(),
+            GetX(-1),
+            GetX(-2),
+            GetX(-3),
+            Mul(GetX(-1), GetX(-2)),
+            Mul(GetX(-1), GetX(-3)),
+            Mul(GetX(-3), GetX(-2)),
+            Pow(GetX(-1), 2),
+            Pow(GetX(-2), 2),
+            Pow(GetX(-3), 2),
+            Pow(GetX(-1), 3),
+            Pow(GetX(-2), 3),
+            Pow(GetX(-3), 3),
+        ],
+    ),
+    PredFunc(
+        name="degree3b",
+        deep=3,
+        seq=[
+            One(),
+            GetX(-1),
+            GetX(-2),
+            GetX(-3),
+            Mul(GetX(-1), GetX(-2)),
+            Mul(GetX(-1), GetX(-3)),
+            Mul(GetX(-3), GetX(-2)),
+            Mul(GetX(-1), Mul(GetX(-1), GetX(-2))),
+            Mul(GetX(-1), Mul(GetX(-1), GetX(-3))),
+            Mul(GetX(-2), Mul(GetX(-2), GetX(-1))),
+            Mul(GetX(-2), Mul(GetX(-2), GetX(-3))),
+            Mul(
+                GetX(-3),
+                Mul(GetX(-3), GetX(-1)),
+            ),
+            Mul(GetX(-3), Mul(GetX(-3), GetX(-2))),
+            Pow(GetX(-1), 2),
+            Pow(GetX(-2), 2),
+            Pow(GetX(-3), 2),
+            Pow(GetX(-1), 3),
+            Pow(GetX(-2), 3),
+            Pow(GetX(-3), 3),
+            Pow(GetX(-1), 4),
+            Pow(GetX(-2), 4),
+            Pow(GetX(-3), 4),
+        ],
+    ),
+    PredFunc(
+        name="degree4i_a",
+        deep=4,
+        seq=[
+            One(),
+            GetX(-1),
+            GetX(-2),
+            GetX(-3),
+            GetX(-4),
+            Mul(GetX(-1), GetX(-2)),
+            Mul(GetX(-1), GetX(-3)),
+            Mul(GetX(-1), GetX(-4)),
+            Mul(GetX(-2), GetX(-3)),
+            Mul(GetX(-2), GetX(-4)),
+            Mul(GetX(-3), GetX(-4)),
+            Mul(GetX(-1), Mul(GetX(-1), GetX(-2))),
+            Mul(GetX(-1), Mul(GetX(-1), GetX(-3))),
+            Mul(GetX(-2), Mul(GetX(-2), GetX(-1))),
+            Mul(GetX(-2), Mul(GetX(-2), GetX(-3))),
+            Mul(
+                GetX(-3),
+                Mul(GetX(-3), GetX(-1)),
+            ),
+            Mul(GetX(-3), Mul(GetX(-3), GetX(-2))),
+            Pow(GetX(-1), 2),
+            Pow(GetX(-2), 2),
+            Pow(GetX(-3), 2),
+            Pow(GetX(-4), 2),
+            Pow(GetX(-1), 3),
+            Pow(GetX(-2), 3),
+            Pow(GetX(-3), 3),
+            Pow(GetX(-4), 3),
+            Pow(GetX(-1), 4),
+            Pow(GetX(-2), 4),
+            Pow(GetX(-3), 4),
+            Pow(GetX(-4), 4),
+        ],
+    ),
+]

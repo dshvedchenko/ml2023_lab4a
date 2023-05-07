@@ -12,10 +12,10 @@ with open("oil_price.json") as of:
 min_error = 1000
 best_model = None
 
-for name, ps in solver.basics.functions_dict.items():
+for func in solver.basics.functions:
 
     model = PredictingFilter(
-        deep=ps.deep, funct=ps.seq, tgt_rmsq=1.2
+        func=func, tgt_rmsq=1.2
     )
     model.fit(dt[:-1])
 
@@ -23,7 +23,7 @@ for name, ps in solver.basics.functions_dict.items():
     pred = model.predict(points=dt[-model.deep-1:-1])
     real = dt[-1]
     pred_error = np.abs((pred-real))
-    print(f"{name}: RMSQ 1 day: {model.rmsq}, prediction error: {pred_error}")
+    print(f"{func.name}: RMSQ 1 day: {model.rmsq}, prediction error: {pred_error}")
 
 # ----
 
@@ -35,11 +35,11 @@ for name, ps in solver.basics.functions_dict.items():
     points = points[1:]
     real = dt[-1]
     pred_error = np.abs((pred-real))
-    print(f"{name}: RMSQ 2 day: {model.rmsq}, prediction error: {pred_error}")
+    print(f"{func.name}: RMSQ 2 day: {model.rmsq}, prediction error: {pred_error}")
 
     if pred_error < min_error:
         best_model = model
 
-best_model.store("../model.bin")
+best_model.store("model.bin")
 
 

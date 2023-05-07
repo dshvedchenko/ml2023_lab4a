@@ -2,13 +2,16 @@ from typing import Callable
 
 import numpy as np
 
+from solver.basics import PredFunc
+
 
 class PredictingFilter:
     def __init__(
-        self, deep: int = 2, funct: list[Callable] = None, tgt_rmsq: float = 1
+        self, func: PredFunc, tgt_rmsq: float = 1
     ):
-        self.deep = deep
-        self.funct: list[Callable] = funct
+        self.deep = func.deep
+        self.funct: list[Callable] = func.seq
+        self.pred_name = func.name
         self.alphas: np.ndarray = np.array([])
         self.tgt_rmsq: float = tgt_rmsq
         self.rmsq: float = None
