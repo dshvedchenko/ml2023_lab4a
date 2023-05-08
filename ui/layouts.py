@@ -5,7 +5,7 @@ layout1 = [
         sg.Input(key="input_file", enable_events=True, readonly=True),
         sg.FileBrowse(button_text="Open Data", target="input_file", key="-inpbtn-"),
     ],
-    [sg.Button("Train Model", key="-trainmodel-"), sg.Button("Predict", key="-predict-")],
+    [sg.Button("Train Model", key="-trainmodel-"), sg.Button("Predict", key="-predict-switch-")],
     [
         sg.Multiline(
             "",
@@ -18,20 +18,26 @@ layout1 = [
     ],[sg.Button("Exit", key="Exit1")],
 ]
 layout2 = [
-    # [sg.Text("Hi", key="-src-")],
+    [sg.Input(key="predict_input"),
+        sg.T(" Separator: "),
+        sg.Radio(key="tab-sep", group_id="SEPARATOR_TYPE", text="Tab", default=True),
+        sg.Radio(key="com-sep", group_id="SEPARATOR_TYPE", text="Comma", default=False),
+     ],
     [
         sg.Multiline(
             "Hi",
-            key="-src-",
+            key="PREDICT_OUTPUT",
+            disabled=True,
             autoscroll=True,
-            size=(40, 20),
-            justification="r",
+            size=(60, 20),
+            justification="l",
             font="20",
         )
     ],
     [
-        sg.Button("Ok", key="Exit2"),
-        sg.Button("Stop", key="-stop-"),
+        sg.Button("Predict", key="-predict-"),
+        sg.Button("Exit", key="Exit2"),
+
     ],
 ]
 layout = [
