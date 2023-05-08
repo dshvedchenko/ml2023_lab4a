@@ -1,10 +1,10 @@
 from solver.sly_filter import PredictingFilter
-import json
+import utils
 
-with open("oil_price.json") as of:
-    dt = json.load(of)
+dt = utils.read_xls("data/plain.xlsx")
 
 model:PredictingFilter = PredictingFilter.restore("model.bin")
+print(f"Predictor : {model.pred_name}")
 
 points=dt[-model.deep-1:]
 

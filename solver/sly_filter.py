@@ -6,9 +6,7 @@ from solver.basics import PredFunc
 
 
 class PredictingFilter:
-    def __init__(
-        self, func: PredFunc, tgt_rmsq: float = 1
-    ):
+    def __init__(self, func: PredFunc, tgt_rmsq: float = 1):
         self.deep = func.deep
         self.funct: list[Callable] = func.seq
         self.pred_name = func.name
@@ -64,13 +62,37 @@ class PredictingFilter:
 
         return res
 
-    def store(self, file_name:str):
+    def store(self, file_name: str):
         import pickle
+
         with open(file_name, "wb") as dst:
-            pickle.dump(self,dst)
+            pickle.dump(self, dst)
 
     @classmethod
-    def restore(cls, file_name:str):
+    def restore(cls, file_name: str):
         import pickle
-        with open(file_name,"rb") as src:
+
+        with open(file_name, "rb") as src:
             return pickle.load(src)
+
+
+class ModelEvaluation:
+
+    def __init__(self, model: PredictingFilter, ticks_ahead: int):
+
+        self.model = model
+        self.ticks_ahead = ticks_ahead
+
+    def evaluate(self, data: list):
+        target = data[-1]
+        points = data[:-self.ticks_ahead].copy()
+        pred = self.model.predict(points=points)
+        ticks_counter = self.ticks_ahead - 1
+        while ticks_counter > 0:
+            points.append(pred)
+            points = points[1:]
+            pred = self.model.predict(points=points)
+            ticks_counter -= 1
+        pred_error = np.abs((pred - target))
+
+        return pred_error
