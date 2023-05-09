@@ -41,25 +41,24 @@ def train_model_on_data(dt:list, model_file_name:str = "model.bin" , logger=None
         model = PredictingFilter(
             func_name=func_name,func=func, tgt_rmsq=0
         )
-        model.fit(dt[:-1])
+        for ticks_ahead in range(1,1+pred_horizont_limit):
+            model.fit(dt[:-ticks_ahead])
+            me = ModelEvaluation(model=model, ticks_ahead=ticks_ahead)
+            pred_error, rel_pred_error = me.evaluate(data=dt[-model.deep - ticks_ahead:])
+            logger(f"Прогноз: {ticks_ahead} крок: {model.rmsq}, похибка: {pred_error}, вдносна похибка: {rel_pred_error}")
 
-        me = ModelEvaluation(model=model, ticks_ahead=1)
-        pred_error, rel_pred_error = me.evaluate(data=dt[-model.deep - 1:])
-        logger(f"Прогноз: 1 крок: {model.rmsq}, похибка: {pred_error}, вдносна похибка: {rel_pred_error}")
+            if rel_pred_error < max_error / 100:
+                model.set_horizont(ticks_ahead)
+                if rel_pred_error < operation_max_error or\
+                        best_model is not None and model.horizont > best_model.horizont:
+                    best_model = model
+                    operation_max_error = rel_pred_error
+                else:
+                    logger("! відкинуто, є кращі")
+            else:
+                logger("! відкинуто, перевіщено максимальну похибку")
 
-        # ----
-        #
-        # model.fit(dt[:-2])
-        #
-        # me = ModelEvaluation(model=model, ticks_ahead=2)
-        # pred_error = me.evaluate(data=dt[-model.deep - 2:])
-        # logger(f"{func_name}: RMSQ 2 day: {model.rmsq}, prediction error: {pred_error}")
 
-        if rel_pred_error < operation_max_error:
-            best_model = model
-            operation_max_error = rel_pred_error
-        else:
-            logger("! відкинуто")
 
         logger("-"*50)
 

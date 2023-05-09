@@ -13,7 +13,11 @@ class PredictingFilter:
         self.alphas: np.ndarray = np.array([])
         self.tgt_rmsq: float = tgt_rmsq
         self.rmsq: float = None
+        self.horizont: int = 1
 
+
+    def set_horizont(self, val):
+        self.horizont = val
     def get_pred_sym(self):
         assert len(self.alphas) > 0, "Модель не тренована"
         return self.predictor_func.get_sym(list(np.round(self.alphas,3)))

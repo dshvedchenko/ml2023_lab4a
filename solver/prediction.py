@@ -19,11 +19,13 @@ def predict_driver(model_file:str, input_data:str, logger):
     model: PredictingFilter = PredictingFilter.restore(model_file)
     points = data[-model.deep:]
 
-    # logger(f"Модель: {model.pred_name}, попредніх точок {model.deep}")
+    logger(f"Модель: {model.pred_name}, попредніх точок {model.deep}")
     logger(f"Вхідні точки: {str(points)}")
     # logger(f"Опорний вигляд моделі: {model.get_pred_sym()}")
-
-
-    pred = model.predict(points=points)
-
-    logger(f"Predicted: {pred}")
+    res = []
+    for tick  in range(1, model.horizont +1):
+        pred = model.predict(points=points)
+        res.append(pred)
+        points.append(pred)
+        points.pop(0)
+    logger(f"Пердбачено: {res}")
