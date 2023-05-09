@@ -6,7 +6,7 @@ from solver.basics import PredFunc
 
 
 class PredictingFilter:
-    def __init__(self, func_name:str, func: PredFunc, tgt_rmsq: float = 1):
+    def __init__(self, func_name: str, func: PredFunc, tgt_rmsq: float = 1):
         self.deep = func.deep
         self.predictor_func: PredFunc = func
         self.pred_name = func_name
@@ -15,12 +15,12 @@ class PredictingFilter:
         self.rmsq: float = None
         self.horizont: int = 1
 
-
     def set_horizont(self, val):
         self.horizont = val
+
     def get_pred_sym(self):
         assert len(self.alphas) > 0, "Модель не тренована"
-        return self.predictor_func.get_sym(list(np.round(self.alphas,3)))
+        return self.predictor_func.get_sym(list(np.round(self.alphas, 3)))
 
     def _get_one_equation(self, points: np.ndarray) -> list:
         return [f(points) for f in self.predictor_func.seq]
@@ -85,20 +85,19 @@ class PredictingFilter:
 
 
 class ModelEvaluation:
-
     def __init__(self, model: PredictingFilter, ticks_ahead: int):
 
         self.model = model
         self.ticks_ahead = ticks_ahead
 
     def evaluate(self, data: list):
-        '''
+        """
         Return predicted absolute error and predicted relative error
         :param data:
         :return:
-        '''
+        """
         target = data[-1]
-        points = data[:-self.ticks_ahead].copy()
+        points = data[: -self.ticks_ahead].copy()
         pred = self.model.predict(points=points)
         ticks_counter = self.ticks_ahead - 1
         while ticks_counter > 0:
@@ -108,4 +107,4 @@ class ModelEvaluation:
             ticks_counter -= 1
         pred_error = np.abs((pred - target))
 
-        return pred_error, pred_error/target
+        return pred_error, pred_error / target

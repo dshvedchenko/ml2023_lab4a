@@ -7,17 +7,10 @@ def test_a():
 
     for name, fn in solver.basics.functions_dict.items():
 
-        model = PredictingFilter(
-            deep=2, funct=fn, tgt_rmsq=1.2
-        )
+        model = PredictingFilter(deep=2, funct=fn, tgt_rmsq=1.2)
         model.fit(dt[:-1])
 
         print(f"{name}: RMSQ: {model.rmsq}")
-
-
-
-
-
 
         # for s in range(2, len(dt)):
         #     print(model.predict(points=dt[s - 2:s]), dt[s])

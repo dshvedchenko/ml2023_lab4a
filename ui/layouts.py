@@ -16,7 +16,7 @@ layout1 = [
             target="model_train_file",
             key="-modeltrainbtn-",
             default_extension="bin",
-            initial_folder="../data"
+            initial_folder="../data",
         ),
     ],
     [
@@ -67,9 +67,9 @@ layout2 = [
             button_text="Файл моделі",
             target="model_pred_file",
             key="-modelpredbtn-",
-            initial_folder="../data"
+            initial_folder="../data",
         ),
-        sg.Button("Завантажити модель", key="-load-model-")
+        sg.Button("Завантажити модель", key="-load-model-"),
     ],
     [
         sg.Input(key="predict_input"),

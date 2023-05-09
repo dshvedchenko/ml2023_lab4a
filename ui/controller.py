@@ -40,7 +40,7 @@ while True:
         window["-l2-"].update(visible=False)
 
     if event == "input_file":
-        window["-trainmodel-"].update(disabled= False)
+        window["-trainmodel-"].update(disabled=False)
 
     if event == "model_train_file":
         window["model_pred_file"].update(values["model_train_file"])
@@ -62,7 +62,7 @@ while True:
                 model_file_name=model_file_name,
                 function_to_use=values["-selected-func-"],
                 max_error=max_error,
-                pred_horizont_limit=pred_horizont_limit
+                pred_horizont_limit=pred_horizont_limit,
             )
             if res is None:
                 sg.popup_error("Модель не визначено на данному наборі", modal=True)
@@ -74,7 +74,7 @@ while True:
 
     if event == "-predict-":
         inp = values["predict_input"]
-        model_file_name=values["model_pred_file"]
+        model_file_name = values["model_pred_file"]
         clean_prediction()
         prediction.predict_driver(
             model_file=model_file_name,

@@ -6,14 +6,15 @@
 # 5. account to RMSQ
 
 
-
-
 import numpy as np
+
 
 def xN(ix):
     def f(data):
-        return data[ix+len(data)]
+        return data[ix + len(data)]
+
     return f
+
 
 def mul(*funcs):
     def f(data):
@@ -21,27 +22,33 @@ def mul(*funcs):
         for f in funcs:
             r *= f(data)
         return r
+
     return f
+
 
 def pow(func, d):
     def f(data):
-        return func(data)**d
+        return func(data) ** d
+
     return f
+
 
 def one():
     def f(*a, **k):
         return 1
+
     return f
 
-# input_data = np.array([10,15,13,19,14,18,17,11,12,14])
-input_data = np.array([10,15,13,14,10,16,13,11,15,18])
 
-F = [one(), xN(-1), xN(-2), mul(xN(-1),xN(-2)), pow(xN(-1),2), pow(xN(-2),2)]
+# input_data = np.array([10,15,13,19,14,18,17,11,12,14])
+input_data = np.array([10, 15, 13, 14, 10, 16, 13, 11, 15, 18])
+
+F = [one(), xN(-1), xN(-2), mul(xN(-1), xN(-2)), pow(xN(-1), 2), pow(xN(-2), 2)]
 deep_t = 2
 
 # create whole linear system
 Xh = []
-for t in range(deep_t,input_data.shape[0]):
+for t in range(deep_t, input_data.shape[0]):
     res = [f(input_data[:t]) for f in F]
     Xh.append(res)
 
@@ -61,17 +68,17 @@ for sc in range(c):
     XC = X.copy()
     bC = b.copy()
     for r in range(X.shape[0]):
-        XC[r,:] = XC[r,:] * X[r,sc]
-        bC[r] = bC[r] * X[r,sc]
-    normX.append(np.sum(XC,axis=0))
+        XC[r, :] = XC[r, :] * X[r, sc]
+        bC[r] = bC[r] * X[r, sc]
+    normX.append(np.sum(XC, axis=0))
     normB.append(np.sum(bC))
 
 # roots
-alphas = np.linalg.solve(normX,normB)
+alphas = np.linalg.solve(normX, normB)
 
-rmsq = np.sqrt(np.sum((np.sum(alphas * X, axis=1) - b)**2)/b.shape[0])
+rmsq = np.sqrt(np.sum((np.sum(alphas * X, axis=1) - b) ** 2) / b.shape[0])
 
-inp_pred = [f([13,11,15]) for f in F]
+inp_pred = [f([13, 11, 15]) for f in F]
 
 pred = np.sum(alphas * inp_pred)
 

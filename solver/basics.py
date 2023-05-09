@@ -57,18 +57,32 @@ class PredFunc:
     deep: int
     seq: list[Callable]
 
-    def get_sym(self, alphas:list= None):
-        _alph = alphas if alphas is not None else map(lambda a: f"a{a}",range(len(self.seq)))
-        res = "F = " + " + ".join(list(map(lambda x,a: f"{a}*{x.get_sym()}", self.seq,_alph )))
-        res = res.replace("+ - ","- ").replace("*1","")
+    def get_sym(self, alphas: list = None):
+        _alph = (
+            alphas
+            if alphas is not None
+            else map(lambda a: f"a{a}", range(len(self.seq)))
+        )
+        res = "F = " + " + ".join(
+            list(map(lambda x, a: f"{a}*{x.get_sym()}", self.seq, _alph))
+        )
+        res = res.replace("+ - ", "- ").replace("*1", "")
         return res
+
 
 functions = dict(
     linear2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2)]),
     depth2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2))]),
     depth2d2=PredFunc(
         deep=2,
-        seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2)), Pow(GetX(-1), 2), Pow(GetX(-2), 2)],
+        seq=[
+            One(),
+            GetX(-1),
+            GetX(-2),
+            Mul(GetX(-1), GetX(-2)),
+            Pow(GetX(-1), 2),
+            Pow(GetX(-2), 2),
+        ],
     ),
     depth3a=PredFunc(
         deep=3,
@@ -159,4 +173,3 @@ def get_predictors_names():
     res = ["ALL"]
     res.extend(functions.keys())
     return res
-
