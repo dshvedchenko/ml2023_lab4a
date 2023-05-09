@@ -59,7 +59,9 @@ class PredFunc:
 
     def get_sym(self, alphas:list= None):
         _alph = alphas if alphas is not None else map(lambda a: f"a{a}",range(len(self.seq)))
-        return "F = " + " + ".join(list(map(lambda x,a: f"{a}*{x.get_sym()}", self.seq,_alph )))
+        res = "F = " + " + ".join(list(map(lambda x,a: f"{a}*{x.get_sym()}", self.seq,_alph )))
+        res = res.replace("+ - ","- ").replace("*1","")
+        return res
 
 functions = dict(
     linear2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2)]),
