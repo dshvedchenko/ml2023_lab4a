@@ -1,9 +1,14 @@
-def train_model(file_name:str, model_file_name:str = "model.bin" , logger=None, function_to_use:str="ALL"):
-    from solver.sly_filter import PredictingFilter, ModelEvaluation
-    import solver.basics
-    import utils
-    import json
-    import numpy as np
+from solver.sly_filter import PredictingFilter, ModelEvaluation
+import solver.basics
+import utils
+import json
+import numpy as np
+def train_model(file_name:str, model_file_name:str = "model.bin" , logger=None,
+                function_to_use:str="ALL",
+                max_error: float = 1,
+                pred_horizont_limit: int =1,
+                ):
+
     # dt = [10, 15, 13, 19, 14, 18, 17, 11 ]
 
     dt = utils.read_xls(file_name)

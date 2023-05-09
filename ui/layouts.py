@@ -4,6 +4,18 @@ from solver import basics
 
 layout1 = [
     [
+        sg.Input(
+            key="model_train_file",
+            enable_events=True,
+            readonly=True,
+            default_text="../data/model.bin",
+            size=80
+        ),
+        sg.FileSaveAs(
+            button_text="Файл моделі", target="model_train_file", key="-modeltrainbtn-"
+        ),
+    ],
+    [
         sg.Input(key="input_file", enable_events=True, readonly=True),
         sg.FileBrowse(button_text="Файл", target="input_file", key="-inpbtn-"),
     ],
@@ -15,6 +27,10 @@ layout1 = [
             font="20",
             default_value="Всі",
         ),
+        sg.T("max похибка (%):"),
+        sg.Input(default_text="1", key="-max-error-", size=4),
+        sg.T("Горизонт прогнозу (крок):"),
+        sg.Input(default_text="1", key="-prediction-horizont-", size=4),
     ],
     [
         sg.Button("Навчання моделі", key="-trainmodel-", disabled=True),
@@ -36,6 +52,18 @@ layout1 = [
 ]
 layout2 = [
     [
+        sg.Input(
+            key="model_pred_file",
+            enable_events=True,
+            readonly=True,
+            default_text="../data/model.bin",
+            size=80
+        ),
+        sg.FileSaveAs(
+            button_text="Файл моделі", target="model_pred_file", key="-modelpredbtn-"
+        ),
+    ],
+    [
         sg.Input(key="predict_input"),
         sg.T("Роздільник: "),
         sg.Radio(
@@ -43,7 +71,10 @@ layout2 = [
         ),
         sg.Radio(key="com-sep", group_id="SEPARATOR_TYPE", text="Кома", default=False),
     ],
-    [sg.Button(" -> тренування", key="-train-switch-")],
+    [
+        sg.Button("Передбачити", key="-predict-"),
+        sg.Button(" -> тренування", key="-train-switch-"),
+    ],
     [
         sg.Multiline(
             "",
@@ -57,7 +88,6 @@ layout2 = [
         )
     ],
     [
-        sg.Button("Передбачити", key="-predict-"),
         sg.Button("Вихід", key="Exit2"),
     ],
 ]

@@ -42,22 +42,34 @@ while True:
     if event == "input_file":
         window["-trainmodel-"].update(disabled= False)
 
+    if event == "model_train_file":
+        window["model_pred_file"].update(values["model_train_file"])
+
+    if event == "model_pred_file":
+        window["model_train_file"].update(values["model_pred_file"])
+
     if event == "-cleantrainlog-":
         window["TRAIN_OUTPUT"].update("")
 
     if event == "-trainmodel-":
         if values["input_file"] != "":
+            max_error = float(values["-max-error-"])
+            pred_horizont_limit = int(values["-prediction-horizont-"])
+            model_file_name = values["model_train_file"]
             training.train_model(
                 file_name=values["input_file"],
                 logger=train_output_logger,
                 model_file_name=model_file_name,
                 function_to_use=values["-selected-func-"],
+                max_error=max_error,
+                pred_horizont_limit=pred_horizont_limit
             )
         else:
             sg.popup_error("Select input file", modal=True)
     if event == "-predict-":
         inp = values["predict_input"]
         is_tab_sep = values["tab-sep"]
+        model_file_name=values["model_pred_file"]
         clean_prediction()
         prediction.predict_driver(
             model_file=model_file_name,
