@@ -36,9 +36,12 @@ def train_model(file_name:str, model_file_name:str = "model.bin" , logger=None, 
 
         if pred_error < min_error:
             best_model = model
+            min_error = pred_error
+
+        logger("-"*50)
 
     best_model.store(model_file_name)
-    logger(f"BEST Model {best_model.pred_name} , Saved to {model_file_name}")
+    logger(f"Краща модель: {best_model.pred_name} , Збережено {model_file_name}")
     return best_model
 
 

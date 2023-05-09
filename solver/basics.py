@@ -58,7 +58,7 @@ class PredFunc:
     seq: list[Callable]
 
     def get_sym(self):
-        return " + ".join(list(map(lambda x: x.get_sym(), self.seq)))
+        return "F = " + " + ".join(list(map(lambda x,a: f"a{a}*{x.get_sym()}", self.seq, range(len(self.seq)))))
 
 functions = dict(
     linear2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2)]),
