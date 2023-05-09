@@ -15,6 +15,9 @@ class PredictingFilter:
         self.rmsq: float = None
         self.horizont: int = 1
 
+
+    def __str__(self):
+        return (f"Модель: {self.pred_name}, попредніх точок {self.deep}, горізонт {self.horizont}")
     def set_horizont(self, val):
         self.horizont = val
 

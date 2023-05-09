@@ -5,7 +5,7 @@ import numpy as np
 def load_model(model_file: str, logger) -> PredictingFilter:
     model: PredictingFilter = PredictingFilter.restore(model_file)
 
-    logger(f"Модель: {model.pred_name}, попредніх точок {model.deep}")
+    logger(f"{model}")
     logger(f"Опорний вигляд моделі: {model.get_pred_sym()}")
 
     return model
@@ -23,7 +23,7 @@ def predict_driver(model_file: str, input_data: str, logger):
     model: PredictingFilter = PredictingFilter.restore(model_file)
     points = data[-model.deep :]
 
-    logger(f"Модель: {model.pred_name}, попредніх точок {model.deep}")
+    logger(str(model))
     logger(f"Вхідні точки: {str(points)}")
     # logger(f"Опорний вигляд моделі: {model.get_pred_sym()}")
     res = []
