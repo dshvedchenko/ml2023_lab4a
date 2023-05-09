@@ -1,5 +1,5 @@
 from solver.sly_filter import PredictingFilter
-import utils
+import numpy as np
 
 
 def load_model(model_file:str, logger) -> PredictingFilter:
@@ -28,4 +28,4 @@ def predict_driver(model_file:str, input_data:str, logger):
         res.append(pred)
         points.append(pred)
         points.pop(0)
-    logger(f"Пердбачено: {res}")
+    logger(f"Пердбачено: {np.round(res,2)}")
