@@ -9,10 +9,13 @@ layout1 = [
             enable_events=True,
             readonly=True,
             default_text="../data/model.bin",
-            size=80
+            size=80,
         ),
         sg.FileSaveAs(
-            button_text="Файл моделі", target="model_train_file", key="-modeltrainbtn-"
+            button_text="Файл моделі",
+            target="model_train_file",
+            key="-modeltrainbtn-",
+            default_extension="bin",
         ),
     ],
     [
@@ -57,10 +60,13 @@ layout2 = [
             enable_events=True,
             readonly=True,
             default_text="../data/model.bin",
-            size=80
+            size=80,
         ),
         sg.FileSaveAs(
-            button_text="Файл моделі", target="model_pred_file", key="-modelpredbtn-"
+            button_text="Файл моделі",
+            target="model_pred_file",
+            key="-modelpredbtn-",
+            default_extension="bin",
         ),
     ],
     [
