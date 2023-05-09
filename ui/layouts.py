@@ -73,11 +73,6 @@ layout2 = [
     ],
     [
         sg.Input(key="predict_input"),
-        sg.T("Роздільник: "),
-        sg.Radio(
-            key="tab-sep", group_id="SEPARATOR_TYPE", text="Табуляція", default=True
-        ),
-        sg.Radio(key="com-sep", group_id="SEPARATOR_TYPE", text="Кома", default=False),
     ],
     [
         sg.Button("Передбачити", key="-predict-"),

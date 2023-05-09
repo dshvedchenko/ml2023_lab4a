@@ -35,7 +35,7 @@ def train_model_on_data(dt:list, model_file_name:str = "model.bin" , logger=None
     for func_name,func in solver.basics.functions.items():
 
         if function_to_use != 'Всі' and function_to_use != func_name: continue
-        logger(f"Модель: {func_name}:")
+        logger(f"Модель: {func_name}, попредніх точок {func.deep}")
         logger(f"Опорний вигляд моделі: {func.get_sym()}")
 
         model = PredictingFilter(

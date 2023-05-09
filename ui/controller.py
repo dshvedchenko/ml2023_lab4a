@@ -70,14 +70,12 @@ while True:
             sg.popup_error("Оберіть файл з початковим набором", modal=True)
     if event == "-predict-":
         inp = values["predict_input"]
-        is_tab_sep = values["tab-sep"]
         model_file_name=values["model_pred_file"]
         clean_prediction()
         prediction.predict_driver(
             model_file=model_file_name,
             input_data=inp,
             logger=predict_logger,
-            is_tab_sep=is_tab_sep,
         )
 
 window.close()
