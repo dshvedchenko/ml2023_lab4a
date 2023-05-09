@@ -6,10 +6,10 @@ from solver.basics import PredFunc
 
 
 class PredictingFilter:
-    def __init__(self, func: PredFunc, tgt_rmsq: float = 1):
+    def __init__(self, func_name:str, func: PredFunc, tgt_rmsq: float = 1):
         self.deep = func.deep
         self.funct: list[Callable] = func.seq
-        self.pred_name = func.name
+        self.pred_name = func_name
         self.alphas: np.ndarray = np.array([])
         self.tgt_rmsq: float = tgt_rmsq
         self.rmsq: float = None

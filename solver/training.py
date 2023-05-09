@@ -1,4 +1,4 @@
-def train_model(file_name:str, model_file_name:str = "model.bin" , logger=None):
+def train_model(file_name:str, model_file_name:str = "model.bin" , logger=None, function_to_use:str="ALL"):
     from solver.sly_filter import PredictingFilter, ModelEvaluation
     import solver.basics
     import utils
@@ -11,24 +11,28 @@ def train_model(file_name:str, model_file_name:str = "model.bin" , logger=None):
     min_error = 1000
     best_model = None
 
-    for func in solver.basics.functions:
+    for func_name,func in solver.basics.functions.items():
+
+        if function_to_use != 'Всі' and function_to_use != func_name: continue
+        logger(f"Модель: {func_name}:")
+        logger(f"Опорний вигляд моделі: {func.get_sym()}")
 
         model = PredictingFilter(
-            func=func, tgt_rmsq=1.2
+            func_name=func_name,func=func, tgt_rmsq=1.2
         )
         model.fit(dt[:-1])
 
         me = ModelEvaluation(model=model, ticks_ahead=1)
         pred_error = me.evaluate(data=dt[-model.deep - 1:])
-        logger(f"{func.name}: RMSQ 1 day: {model.rmsq}, prediction error: {pred_error}")
+        logger(f"{func_name}: RMSQ 1 day: {model.rmsq}, prediction error: {pred_error}")
 
         # ----
-
-        model.fit(dt[:-2])
-
-        me = ModelEvaluation(model=model, ticks_ahead=2)
-        pred_error = me.evaluate(data=dt[-model.deep - 2:])
-        logger(f"{func.name}: RMSQ 2 day: {model.rmsq}, prediction error: {pred_error}")
+        #
+        # model.fit(dt[:-2])
+        #
+        # me = ModelEvaluation(model=model, ticks_ahead=2)
+        # pred_error = me.evaluate(data=dt[-model.deep - 2:])
+        # logger(f"{func_name}: RMSQ 2 day: {model.rmsq}, prediction error: {pred_error}")
 
         if pred_error < min_error:
             best_model = model

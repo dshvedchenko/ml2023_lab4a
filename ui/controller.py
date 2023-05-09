@@ -4,8 +4,7 @@ from solver import training, prediction
 
 model_file_name="../data/model1.bin"
 
-window = sg.Window(title="Synth Filter", layout=layout, resizable=True)
-app_state = dict()
+window = sg.Window(title="Синтезатор Функцій", layout=layout, resizable=True)
 
 def train_output_logger(txt):
     window['TRAIN_OUTPUT'].update(txt+'\n', append=True)
@@ -25,13 +24,11 @@ while True:
         window["-l1-"].update(visible=False)
         window["-l2-"].update(visible=True)
 
-    if event == "input_file":
-        app_state["input_file"] = values.get(event)
-
     if event == "-trainmodel-":
-        if app_state.get("input_file") is not None:
-            training.train_model(file_name=app_state["input_file"], logger=train_output_logger, model_file_name=model_file_name)
-
+        if values["input_file"] != '':
+            training.train_model(file_name=values["input_file"], logger=train_output_logger, model_file_name=model_file_name, function_to_use=values['-selected-func-'])
+        else:
+            sg.popup_error("Select input file", modal=True)
     if event == "-predict-":
         inp = values['predict_input']
         is_tab_sep = values["tab-sep"]

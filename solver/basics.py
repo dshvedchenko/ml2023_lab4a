@@ -11,6 +11,9 @@ class GetX:
     def __call__(self, data: np.ndarray):
         return data[self.ix + len(data)]
 
+    def get_sym(self):
+        return f"F[{self.ix}]"
+
 
 class Mul:
     def __init__(self, *funcs):
@@ -22,6 +25,9 @@ class Mul:
             r *= f(data)
         return r
 
+    def get_sym(self):
+        return "*".join(list(map(lambda x: x.get_sym(), self.funcs)))
+
 
 class Pow:
     def __init__(self, func, d: int):
@@ -31,6 +37,9 @@ class Pow:
     def __call__(self, data: np.ndarray):
         return self.func(data) ** self.d
 
+    def get_sym(self):
+        return f"{self.func.get_sym()}^{self.d}"
+
 
 class One:
     def __init__(self):
@@ -39,26 +48,26 @@ class One:
     def __call__(self, *a):
         return 1
 
+    def get_sym(self):
+        return "1"
+
 
 @dataclass
 class PredFunc:
     deep: int
     seq: list[Callable]
-    name: str
 
+    def get_sym(self):
+        return " + ".join(list(map(lambda x: x.get_sym(), self.seq)))
 
-functions = [
-    PredFunc(name="linear2", deep=2, seq=[One(), GetX(-1), GetX(-2)]),
-    PredFunc(
-        name="degree2", deep=2, seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2))]
-    ),
-    PredFunc(
-        name="degree2p",
+functions = dict(
+    linear2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2)]),
+    degree2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2))]),
+    degree2p=PredFunc(
         deep=2,
         seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2)), Pow(GetX(-1), 2)],
     ),
-    PredFunc(
-        name="degree2b",
+    degree2b=PredFunc(
         deep=2,
         seq=[
             One(),
@@ -69,8 +78,7 @@ functions = [
             Pow(GetX(-2), 2),
         ],
     ),
-    PredFunc(
-        name="degree3a",
+    degree3a=PredFunc(
         deep=3,
         seq=[
             One(),
@@ -88,8 +96,7 @@ functions = [
             Pow(GetX(-3), 3),
         ],
     ),
-    PredFunc(
-        name="degree3b",
+    degree3b=PredFunc(
         deep=3,
         seq=[
             One(),
@@ -119,8 +126,7 @@ functions = [
             Pow(GetX(-3), 4),
         ],
     ),
-    PredFunc(
-        name="degree4i_a",
+    degree4a=PredFunc(
         deep=4,
         seq=[
             One(),
@@ -157,4 +163,11 @@ functions = [
             Pow(GetX(-4), 4),
         ],
     ),
-]
+)
+
+
+def get_predictors_names():
+    res = ["ALL"]
+    res.extend(functions.keys())
+    return res
+
