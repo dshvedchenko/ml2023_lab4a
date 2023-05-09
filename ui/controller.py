@@ -68,6 +68,10 @@ while True:
                 sg.popup_error("Модель не визначено на данному наборі", modal=True)
         else:
             sg.popup_error("Оберіть файл з початковим набором", modal=True)
+
+    if event == "-load-model-":
+        model = prediction.load_model(values["model_pred_file"], logger=predict_logger)
+
     if event == "-predict-":
         inp = values["predict_input"]
         model_file_name=values["model_pred_file"]

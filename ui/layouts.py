@@ -63,13 +63,13 @@ layout2 = [
             default_text="../data/model.bin",
             size=80,
         ),
-        sg.FileSaveAs(
+        sg.FileBrowse(
             button_text="Файл моделі",
             target="model_pred_file",
             key="-modelpredbtn-",
-            default_extension="bin",
             initial_folder="../data"
         ),
+        sg.Button("Завантажити модель", key="-load-model-")
     ],
     [
         sg.Input(key="predict_input"),
