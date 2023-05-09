@@ -5,7 +5,7 @@ from solver import training, prediction, basics
 model_file_name = "../data/model1.bin"
 
 window = sg.Window(
-    title="Синтезатор Функцій", layout=layout, resizable=True, font=("Arial", 18)
+    title="Синтезатор моделей", layout=layout, resizable=True, font=("Arial", 18)
 )
 
 
@@ -56,7 +56,7 @@ while True:
             max_error = float(values["-max-error-"])
             pred_horizont_limit = int(values["-prediction-horizont-"])
             model_file_name = values["model_train_file"]
-            training.train_model(
+            res = training.train_model(
                 file_name=values["input_file"],
                 logger=train_output_logger,
                 model_file_name=model_file_name,
@@ -64,8 +64,10 @@ while True:
                 max_error=max_error,
                 pred_horizont_limit=pred_horizont_limit
             )
+            if res is None:
+                sg.popup_error("Модель не визначено на данному наборі", modal=True)
         else:
-            sg.popup_error("Select input file", modal=True)
+            sg.popup_error("Оберіть файл з початковим набором", modal=True)
     if event == "-predict-":
         inp = values["predict_input"]
         is_tab_sep = values["tab-sep"]

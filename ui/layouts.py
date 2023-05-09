@@ -16,6 +16,7 @@ layout1 = [
             target="model_train_file",
             key="-modeltrainbtn-",
             default_extension="bin",
+            initial_folder="../data"
         ),
     ],
     [
@@ -51,7 +52,7 @@ layout1 = [
             expand_x=True,
         )
     ],
-    [sg.Button("Завершення", key="Exit1")],
+    [sg.Exit("Завершення", key="Exit1")],
 ]
 layout2 = [
     [
@@ -67,6 +68,7 @@ layout2 = [
             target="model_pred_file",
             key="-modelpredbtn-",
             default_extension="bin",
+            initial_folder="../data"
         ),
     ],
     [
@@ -94,7 +96,7 @@ layout2 = [
         )
     ],
     [
-        sg.Button("Вихід", key="Exit2"),
+        sg.Exit("Вихід", key="Exit2"),
     ],
 ]
 layout = [

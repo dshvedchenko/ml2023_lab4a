@@ -9,7 +9,8 @@ def predict_driver(model_file:str, input_data:str, logger, is_tab_sep:bool=True)
     data = parse_input_data(data=input_data, is_tab_sep=is_tab_sep)
 
     model: PredictingFilter = PredictingFilter.restore(model_file)
-    logger(f"Predictor : {model.pred_name}")
+    logger(f"Модель: {model.pred_name}")
+    logger(f"Опорний вигляд моделі: {model.get_pred_sym()}")
 
 
     pred = model.predict(points=data[-model.deep:])

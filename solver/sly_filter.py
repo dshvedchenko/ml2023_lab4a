@@ -8,14 +8,18 @@ from solver.basics import PredFunc
 class PredictingFilter:
     def __init__(self, func_name:str, func: PredFunc, tgt_rmsq: float = 1):
         self.deep = func.deep
-        self.funct: list[Callable] = func.seq
+        self.predictor_func: PredFunc = func
         self.pred_name = func_name
         self.alphas: np.ndarray = np.array([])
         self.tgt_rmsq: float = tgt_rmsq
         self.rmsq: float = None
 
+    def get_pred_sym(self):
+        assert len(self.alphas) > 0, "Модель не тренована"
+        return self.predictor_func.get_sym(list(np.round(self.alphas,3)))
+
     def _get_one_equation(self, points: np.ndarray) -> list:
-        return [f(points) for f in self.funct]
+        return [f(points) for f in self.predictor_func.seq]
 
     def _make_full_ls(self, input_data) -> np.ndarray:
         Xh = []
@@ -26,7 +30,7 @@ class PredictingFilter:
         return np.array(Xh)
 
     def _check_validity(self, input_lenght):
-        assert input_lenght >= self.deep + len(self.funct) + 1
+        assert input_lenght >= self.deep + len(self.predictor_func.seq) + 1
 
     def fit(self, input_x: list):
 
@@ -36,7 +40,7 @@ class PredictingFilter:
         X = self._make_full_ls(input_data)
         b = input_data[self.deep :]
 
-        c = len(self.funct)
+        c = len(self.predictor_func.seq)
         normX = []
         normB = []
         for sc in range(c):
@@ -84,6 +88,11 @@ class ModelEvaluation:
         self.ticks_ahead = ticks_ahead
 
     def evaluate(self, data: list):
+        '''
+        Return predicted absolute error and predicted relative error
+        :param data:
+        :return:
+        '''
         target = data[-1]
         points = data[:-self.ticks_ahead].copy()
         pred = self.model.predict(points=points)
@@ -95,4 +104,4 @@ class ModelEvaluation:
             ticks_counter -= 1
         pred_error = np.abs((pred - target))
 
-        return pred_error
+        return pred_error, pred_error/target

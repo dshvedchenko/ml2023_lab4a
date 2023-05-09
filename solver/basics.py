@@ -57,28 +57,18 @@ class PredFunc:
     deep: int
     seq: list[Callable]
 
-    def get_sym(self):
-        return "F = " + " + ".join(list(map(lambda x,a: f"a{a}*{x.get_sym()}", self.seq, range(len(self.seq)))))
+    def get_sym(self, alphas:list= None):
+        _alph = alphas if alphas is not None else map(lambda a: f"a{a}",range(len(self.seq)))
+        return "F = " + " + ".join(list(map(lambda x,a: f"{a}*{x.get_sym()}", self.seq,_alph )))
 
 functions = dict(
     linear2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2)]),
-    degree2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2))]),
-    degree2p=PredFunc(
+    depth2=PredFunc(deep=2, seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2))]),
+    depth2d2=PredFunc(
         deep=2,
-        seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2)), Pow(GetX(-1), 2)],
+        seq=[One(), GetX(-1), GetX(-2), Mul(GetX(-1), GetX(-2)), Pow(GetX(-1), 2), Pow(GetX(-2), 2)],
     ),
-    degree2b=PredFunc(
-        deep=2,
-        seq=[
-            One(),
-            GetX(-1),
-            GetX(-2),
-            Mul(GetX(-1), GetX(-2)),
-            Pow(GetX(-1), 2),
-            Pow(GetX(-2), 2),
-        ],
-    ),
-    degree3a=PredFunc(
+    depth3a=PredFunc(
         deep=3,
         seq=[
             One(),
@@ -91,9 +81,6 @@ functions = dict(
             Pow(GetX(-1), 2),
             Pow(GetX(-2), 2),
             Pow(GetX(-3), 2),
-            Pow(GetX(-1), 3),
-            Pow(GetX(-2), 3),
-            Pow(GetX(-3), 3),
         ],
     ),
     degree3b=PredFunc(
