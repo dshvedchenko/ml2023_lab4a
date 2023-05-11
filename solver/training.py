@@ -77,4 +77,5 @@ def train_model_on_data(
     if best_model is not None:
         best_model.store(model_file_name)
         logger(f"Краща модель: {best_model.pred_name} , Збережено {model_file_name}")
+
     return best_model
