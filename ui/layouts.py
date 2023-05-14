@@ -1,4 +1,5 @@
 import PySimpleGUI as sg
+from PySimpleGUI import LISTBOX_SELECT_MODE_MULTIPLE
 
 from solver import basics
 
@@ -26,11 +27,19 @@ layout1 = [
     ],
     [
         sg.T("Опорний вигляд моделей:"),
-        sg.Combo(
+        # sg.Combo(
+        #     values=basics.get_predictors_names(),
+        #     key="-selected-func-",
+        #     font="20",
+        #     default_value="Всі",
+        # ),
+        sg.Listbox(
             values=basics.get_predictors_names(),
             key="-selected-func-",
             font="20",
-            default_value="Всі",
+            size=(15,5),
+            select_mode=LISTBOX_SELECT_MODE_MULTIPLE,
+            default_values=basics.get_predictors_names(),
         ),
         sg.T("max похибка (%):"),
         sg.Input(default_text="1", key="-max-error-", size=4),
@@ -53,7 +62,7 @@ layout1 = [
             expand_x=True,
         )
     ],
-    [sg.Exit("Завершення", key="Exit1")],
+    [sg.Exit("Вихід", key="Exit1")],
 ]
 layout2 = [
     [
@@ -73,7 +82,7 @@ layout2 = [
         sg.Button("Завантажити модель", key="-load-model-"),
     ],
     [
-        sg.Input(key="predict_input"),
+        sg.Input(key="predict_input", size=120, font=("Arial", 14)),
     ],
     [
         sg.Button("Передбачити", key="-predict-"),

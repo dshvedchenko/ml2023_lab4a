@@ -9,6 +9,9 @@ window = sg.Window(
 )
 
 
+def show_error(msg:str):
+    sg.popup_error(msg, font=("Helvetica", 20), modal=True)
+
 def train_output_logger(txt):
     window["TRAIN_OUTPUT"].update(txt + "\n", append=True)
 
@@ -68,22 +71,24 @@ while True:
                     pred_horizont_limit=pred_horizont_limit,
                 )
                 if res is None:
-                    sg.popup_error("Модель не визначено на данному наборі", modal=True)
+                    show_error("Модель не визначено на данному наборі")
             else:
-                sg.popup_error("Оберіть файл з початковим набором", modal=True)
+                show_error("Оберіть файл з початковим набором")
         except Exception as e:
-            sg.popup_error("Помилка виконання " + str(e), modal=True)
+            show_error("Помилка виконання " + str(e))
     if event == "-load-model-":
         model = prediction.load_model(values["model_pred_file"], logger=predict_logger)
 
     if event == "-predict-":
-        inp = values["predict_input"]
-        model_file_name = values["model_pred_file"]
-        clean_prediction()
-        prediction.predict_driver(
-            model_file=model_file_name,
-            input_data=inp,
-            logger=predict_logger,
-        )
-
+        try:
+            inp = values["predict_input"]
+            model_file_name = values["model_pred_file"]
+            clean_prediction()
+            prediction.predict_driver(
+                model_file=model_file_name,
+                input_data=inp,
+                logger=predict_logger,
+            )
+        except Exception as e:
+            show_error("Помилка виконання " + str(e))
 window.close()

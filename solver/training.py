@@ -18,7 +18,7 @@ def train_model(
     model_file_name: str = "model.bin",
     input_row: int = 2,
     logger=None,
-    function_to_use: str = "ALL",
+    function_to_use: list[str] = None,
     max_error: float = 1,
     pred_horizont_limit: int = 1,
 ):
@@ -46,7 +46,7 @@ def train_model_on_data(
     dt: list,
     model_file_name: str = "model.bin",
     logger=None,
-    function_to_use: str = "ALL",
+    function_to_use: list[str] = None,
     max_error: float = 1,
     pred_horizont_limit: int = 1,
 ):
@@ -56,7 +56,7 @@ def train_model_on_data(
 
     for func_name, func in solver.basics.functions.items():
 
-        if function_to_use != "Всі" and function_to_use != func_name:
+        if func_name not in function_to_use:
             continue
         logger(f"Модель: {func_name}, попредніх точок {func.deep}")
         logger(f"Опорний вигляд моделі: {func.get_sym()}")

@@ -170,6 +170,6 @@ functions = dict(
 
 
 def get_predictors_names():
-    res = ["ALL"]
+    res = []
     res.extend(functions.keys())
     return res
