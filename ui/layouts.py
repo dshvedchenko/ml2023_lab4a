@@ -20,6 +20,7 @@ layout1 = [
             initial_folder="../data",
         ),
     ],
+    [sg.T("У файлі данних. ! Перша колонка містить назву рядка! і не імпортується", font=("Helvetica", 14))],
     [
         sg.Input(key="input_file", enable_events=True, readonly=True),
         sg.FileBrowse(button_text="Файл", target="input_file", key="-inpbtn-"),
@@ -36,7 +37,7 @@ layout1 = [
         sg.Listbox(
             values=basics.get_predictors_names(),
             key="-selected-func-",
-            font="20",
+            font=("helvetica", 12),
             size=(15,5),
             select_mode=LISTBOX_SELECT_MODE_MULTIPLE,
             default_values=basics.get_predictors_names(),
