@@ -5,6 +5,14 @@ import json
 import numpy as np
 
 
+def get_autocorrelation(dt: list, ticks: int):
+    autc = []
+    for shift in range(1, ticks + 1):
+        corr = np.corrcoef(dt[shift:], dt[:-shift])[0, 1]
+        autc.append(corr)
+    return autc
+
+
 def train_model(
     file_name: str,
     model_file_name: str = "model.bin",
@@ -19,9 +27,10 @@ def train_model(
 
     dt = utils.read_xls(file_name, input_row=input_row)
 
-    autocorr = np.corrcoef(dt[1:],dt[:-1])[0,1]
-    if abs(autocorr) < .1: logger("Увага ! Здається це білий шум !")
-    else: logger(f"Автокорреляція: {autocorr}")
+    autocorr = get_autocorrelation(dt, ticks=pred_horizont_limit)
+    logger(f"Автокорреляція: {autocorr}")
+    if abs(autocorr[0]) < 0.1:
+        logger("Увага ! Здається це білий шум !")
 
     return train_model_on_data(
         dt=dt,
