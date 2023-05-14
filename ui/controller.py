@@ -52,23 +52,27 @@ while True:
         window["TRAIN_OUTPUT"].update("")
 
     if event == "-trainmodel-":
-        if values["input_file"] != "":
-            max_error = float(values["-max-error-"])
-            pred_horizont_limit = int(values["-prediction-horizont-"])
-            model_file_name = values["model_train_file"]
-            res = training.train_model(
-                file_name=values["input_file"],
-                logger=train_output_logger,
-                model_file_name=model_file_name,
-                function_to_use=values["-selected-func-"],
-                max_error=max_error,
-                pred_horizont_limit=pred_horizont_limit,
-            )
-            if res is None:
-                sg.popup_error("Модель не визначено на данному наборі", modal=True)
-        else:
-            sg.popup_error("Оберіть файл з початковим набором", modal=True)
-
+        try:
+            if values["input_file"] != "":
+                max_error = float(values["-max-error-"])
+                pred_horizont_limit = int(values["-prediction-horizont-"])
+                model_file_name = values["model_train_file"]
+                input_row=int(values["input_row"])
+                res = training.train_model(
+                    file_name=values["input_file"],
+                    input_row=input_row,
+                    logger=train_output_logger,
+                    model_file_name=model_file_name,
+                    function_to_use=values["-selected-func-"],
+                    max_error=max_error,
+                    pred_horizont_limit=pred_horizont_limit,
+                )
+                if res is None:
+                    sg.popup_error("Модель не визначено на данному наборі", modal=True)
+            else:
+                sg.popup_error("Оберіть файл з початковим набором", modal=True)
+        except Exception as e:
+            sg.popup_error("Помилка виконання " + str(e), modal=True)
     if event == "-load-model-":
         model = prediction.load_model(values["model_pred_file"], logger=predict_logger)
 

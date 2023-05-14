@@ -22,6 +22,7 @@ layout1 = [
     [
         sg.Input(key="input_file", enable_events=True, readonly=True),
         sg.FileBrowse(button_text="Файл", target="input_file", key="-inpbtn-"),
+        sg.T("Рядок з данними"),sg.Input(key="input_row", enable_events=True, default_text="2", size=4),
     ],
     [
         sg.T("Опорний вигляд моделей:"),
