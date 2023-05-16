@@ -44,7 +44,7 @@ layout1 = [
         ),
         sg.T("max похибка (%):"),
         sg.Input(default_text="1", key="-max-error-", size=4),
-        sg.T("Горизонт прогнозу (крок):"),
+        sg.T("Прогнозувати на кроків:"),
         sg.Input(default_text="1", key="-prediction-horizont-", size=4),
     ],
     [

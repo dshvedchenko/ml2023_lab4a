@@ -6,7 +6,7 @@ def load_model(model_file: str, logger) -> PredictingFilter:
     model: PredictingFilter = PredictingFilter.restore(model_file)
 
     logger(f"{model}")
-    logger(f"Опорний вигляд моделі: {model.get_pred_sym()}")
+    logger(f"Модель: {model.get_pred_sym()}")
 
     return model
 
