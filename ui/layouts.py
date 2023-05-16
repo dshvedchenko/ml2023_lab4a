@@ -83,6 +83,7 @@ layout2 = [
         sg.Button("Завантажити модель", key="-load-model-"),
     ],
     [
+        sg.T("Вхідні данні для прогнозу"),
         sg.Input(key="predict_input", size=120, font=("Arial", 14)),
     ],
     [
