@@ -69,7 +69,7 @@ def train_model_on_data(
                 data=dt[-model.deep - ticks_ahead :]
             )
             logger(
-                f"Прогноз: {ticks_ahead} крок: {model.rmsq}, похибка: {pred_error}, вдносна похибка: {rel_pred_error}"
+                f"Прогноз: {ticks_ahead} крок: RMSQ {model.rmsq}, похибка: {pred_error}, вдносна похибка: {rel_pred_error}"
             )
 
             if rel_pred_error < max_error / 100:
